@@ -1,111 +1,62 @@
 "use client";
-import React, { useState } from 'react';
+
+import React, { useState } from "react";
+
+type MenuItem = {
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+  vegetarian?: boolean;
+};
+
+const menuItems: MenuItem[] = [
+  { name: "Royal Paneer Thali", description: "Paneer curry, dal, rice, 2 rotis, salad and sweet", price: 249, category: "Thalis", vegetarian: true, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85" },
+  { name: "Masala Dosa", description: "Crisp dosa with potato masala, sambar and chutneys", price: 139, category: "South Indian", vegetarian: true, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=900&q=85" },
+  { name: "Butter Chicken", description: "Tandoori chicken in a rich, creamy tomato gravy", price: 329, category: "Main Course", image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=85" },
+  { name: "Dal Makhani", description: "Slow-cooked black lentils finished with butter and cream", price: 189, category: "Main Course", vegetarian: true, image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85" },
+  { name: "Tandoori Platter", description: "Smoky chicken tikka, seekh kebab and mint chutney", price: 379, category: "Starters", image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85" },
+  { name: "Gulab Jamun", description: "Warm soft dumplings soaked in saffron sugar syrup", price: 99, category: "Desserts", vegetarian: true, image: "https://images.unsplash.com/photo-1666190094762-5c5c4e3e8b2c?auto=format&fit=crop&w=900&q=85" },
+];
+
+const categories = ["All", "Thalis", "Starters", "Main Course", "South Indian", "Desserts"];
 
 export default function Home() {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const [cart, setCart] = useState<MenuItem[]>([]);
   const [submitted, setSubmitted] = useState(false);
 
+  const filteredItems = activeCategory === "All" ? menuItems : menuItems.filter((item) => item.category === activeCategory);
+  const cartTotal = cart.reduce((total, item) => total + item.price, 0);
+  const addToCart = (item: MenuItem) => setCart((currentCart) => [...currentCart, item]);
+
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans">
-      {/* Navbar */}
-      <nav className="p-6 flex justify-between items-center border-b border-gray-900 sticky top-0 bg-[#0a0a0a]/80 backdrop-blur-md z-50">
-        <h1 className="text-2xl font-black text-orange-500 italic">PANCHAT DHABA</h1>
-        <div className="hidden md:flex gap-6 text-sm font-medium text-gray-400">
-          <a href="#menu" className="hover:text-white transition">Menu</a>
-          <a href="#payment" className="hover:text-white transition">Pay Now</a>
-          <a href="/admin" className="hover:text-white transition text-xs border border-gray-700 px-3 py-1 rounded-full">Owner Login</a>
-        </div>
-      </nav>
+    <div className="hotel-site min-h-screen bg-[#fbf8f2] text-[#241c16]">
+      <div className="top-strip">OPEN TODAY 11:00 AM - 11:00 PM <span>•</span> PURE VEGETARIAN OPTIONS AVAILABLE</div>
+      <header className="site-header">
+        <a href="#home" className="brand-mark"><span className="brand-icon">HK</span><span><strong>HOTEL KRISHNA IN</strong><small>Family Restaurant &amp; Banquet</small></span></a>
+        <nav className="desktop-nav"><a href="/menu">Menu</a><a href="/about">Our story</a><a href="/contact">Contact</a><a href="/admin">Owner login</a></nav>
+        <a href="/menu" className="header-order">Order online <span>→</span></a>
+      </header>
 
-      {/* Hero Section */}
-      <section className="py-20 px-6 text-center max-w-4xl mx-auto">
-        <h2 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-          GARMA GARAM <br/> <span className="text-orange-600">GHAR JAISA KHANA.</span>
-        </h2>
-        <p className="text-gray-400 text-lg mb-8">Special Student Thalis starting at just ₹80. Pure Dhaba style, delivered to your hostel.</p>
-        <a href="#payment" className="bg-orange-600 hover:bg-orange-500 text-white px-10 py-4 rounded-full font-bold transition-all inline-block shadow-lg shadow-orange-900/20">
-          Order Now
-        </a>
-      </section>
+      <main>
+        <section id="home" className="restaurant-hero">
+          <div className="hero-copy"><p className="eyebrow">A taste of home, served with heart</p><h1>Good food.<br /><em>Good times.</em><br />Great memories.</h1><p className="hero-text">From our family kitchen to your table, enjoy honest Indian flavours, warm hospitality and a meal worth coming back for.</p><div className="hero-actions"><a href="#menu" className="primary-button">Explore our menu <span>↗</span></a><a href="#about" className="text-link">Discover Hotel Krishna <span>→</span></a></div></div>
+          <div className="hero-visual"><img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1400&q=90" onError={(event) => { event.currentTarget.src = "/food-fallback.svg"; }} alt="Warmly lit dining room at Hotel Krishna" /><div className="hero-badge"><strong>15+</strong><span>years of<br />serving love</span></div></div>
+        </section>
 
-      {/* Simple Menu Preview */}
-      <section id="menu" className="max-w-6xl mx-auto px-6 py-10">
-        <h3 className="text-2xl font-bold mb-8 border-l-4 border-orange-600 pl-4">Today's Specials</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {['Student Special Thali', 'Paneer Butter Masala', 'Dal Tadka (Dhaba Style)'].map((item) => (
-            <div key={item} className="bg-[#111] p-6 rounded-3xl border border-gray-800 hover:border-orange-900 transition cursor-pointer">
-              <div className="w-full h-40 bg-gray-800 rounded-2xl mb-4 animate-pulse"></div>
-              <h4 className="text-xl font-bold">{item}</h4>
-              <p className="text-gray-500 text-sm mt-2">Unlimited Roti + Rice + Salad</p>
-              <p className="text-orange-500 font-bold mt-4 text-lg">₹120</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        <section className="promise-row"><div><span className="promise-icon">✦</span><strong>Fresh ingredients</strong><small>Picked daily, cooked fresh</small></div><div><span className="promise-icon">⌁</span><strong>Family recipes</strong><small>Flavours passed down</small></div><div><span className="promise-icon">♡</span><strong>Made with care</strong><small>Every plate, every time</small></div></section>
 
-      {/* Specific Payment Section (The core requirement) */}
-      <section id="payment" className="max-w-4xl mx-auto px-6 py-20">
-        <div className="bg-[#111] rounded-[3rem] p-8 md:p-12 border border-gray-800 shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/10 blur-3xl rounded-full"></div>
-          
-          <div className="grid md:grid-cols-2 gap-12 relative z-10">
-            {/* Step 1: QR & Owner No */}
-            <div>
-              <span className="text-orange-500 font-bold text-sm uppercase tracking-widest">Step 1</span>
-              <h3 className="text-3xl font-black mt-2 mb-6">Scan & Pay</h3>
-              <div className="bg-white p-4 rounded-3xl inline-block mb-6 shadow-xl">
-                {/* Visual Placeholder for QR */}
-                <div className="w-48 h-48 bg-gray-200 flex items-center justify-center text-black text-xs font-bold text-center p-4 border-2 border-dashed border-gray-400">
-                   [YOUR QR CODE IMAGE WILL GO HERE]
-                </div>
-              </div>
-              <div className="space-y-4">
-                <p className="text-gray-400">Owner Name: <span className="text-white font-medium">Mr. Panchat</span></p>
-                <p className="text-gray-400">Phone: <span className="text-white font-medium">+91 98765 43210</span></p>
-                <p className="text-xs text-orange-500 bg-orange-500/10 p-3 rounded-xl inline-block">
-                  Note: Payment confirm hone ke baad hi order prepare hoga.
-                </p>
-              </div>
-            </div>
+        <section id="menu" className="menu-section section-wrap"><div className="section-heading"><div><p className="eyebrow">From our kitchen</p><h2>Something for<br /><em>every craving.</em></h2></div><p>Indian classics, family favourites and a few delicious surprises. Everything is made to order, just for you.</p></div><div className="category-tabs">{categories.map((category) => <button key={category} onClick={() => setActiveCategory(category)} className={activeCategory === category ? "active" : ""}>{category}</button>)}</div><div className="food-grid">{filteredItems.map((item) => <article className="food-card" key={item.name}><div className="food-image"><img src={item.image} onError={(event) => { event.currentTarget.src = "/food-fallback.svg"; }} alt={item.name} /><button className="quick-add" onClick={() => addToCart(item)} aria-label={`Add ${item.name} to order`}>+</button></div><div className="food-info"><div><h3>{item.name}</h3><p>{item.description}</p></div><strong>₹{item.price}</strong></div></article>)}</div></section>
 
-            {/* Step 2: Upload Proof */}
-            <div>
-              <span className="text-orange-500 font-bold text-sm uppercase tracking-widest">Step 2</span>
-              <h3 className="text-3xl font-black mt-2 mb-6">Submit Proof</h3>
-              
-              {!submitted ? (
-                <form onSubmit={(e) => {e.preventDefault(); setSubmitted(true)}} className="space-y-4">
-                  <input type="text" placeholder="Aapka Naam" className="w-full bg-black border border-gray-800 p-4 rounded-2xl focus:border-orange-500 outline-none transition" required />
-                  <input type="tel" placeholder="Hostel / Room Number" className="w-full bg-black border border-gray-800 p-4 rounded-2xl focus:border-orange-500 outline-none transition" required />
-                  
-                  <div className="border-2 border-dashed border-gray-800 rounded-2xl p-8 text-center hover:border-orange-500 transition group cursor-pointer bg-black/50">
-                    <input type="file" className="hidden" id="proof" required />
-                    <label htmlFor="proof" className="cursor-pointer">
-                      <p className="text-gray-400 group-hover:text-orange-500">Click to upload Screenshot</p>
-                      <p className="text-[10px] text-gray-600 mt-1">JPG, PNG allowed</p>
-                    </label>
-                  </div>
+        <section id="about" className="story-section"><div className="story-image"><img src="https://images.unsplash.com/photo-1552566626-52f8b828?auto=format&fit=crop&w=1100&q=85" onError={(event) => { event.currentTarget.src = "/food-fallback.svg"; }} alt="Chef preparing a fresh meal" /></div><div className="story-copy"><p className="eyebrow">The Krishna story</p><h2>Food that feels<br /><em>like coming home.</em></h2><p>Hotel Krishna IN began with a simple idea: serve food that brings people together. Today, our kitchen still follows the same recipes, the same patience and the same generous spirit.</p><a href="/about" className="text-link">Meet our family <span>→</span></a></div></section>
 
-                  <button type="submit" className="w-full bg-orange-600 text-white py-4 rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-95 transition shadow-lg shadow-orange-900/40">
-                    CONFIRM & SEND
-                  </button>
-                </form>
-              ) : (
-                <div className="bg-green-500/10 border border-green-500/50 p-8 rounded-3xl text-center animate-in fade-in zoom-in duration-300">
-                  <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                  </div>
-                  <h4 className="text-xl font-bold text-green-500">Request Sent!</h4>
-                  <p className="text-sm text-gray-400 mt-2">Owner aapka payment check kar rahe hain. Jaldi hi phone aayega.</p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
+        <section id="payment" className="order-section section-wrap"><div className="order-panel"><div className="order-intro"><p className="eyebrow">Ready when you are</p><h2>Place your<br /><em>order.</em></h2><p>Add your favourites to the order, pay securely by UPI and send us your payment proof. We&apos;ll get cooking.</p>{cart.length > 0 && <div className="cart-summary"><span>{cart.length} item{cart.length > 1 ? "s" : ""} in your order</span><strong>₹{cartTotal}</strong></div>}</div><div className="payment-form"><div className="payment-step"><span>01</span><div><h3>Scan &amp; pay</h3><p>Use any UPI app to pay <strong>₹{cartTotal || "your bill"}</strong> to Hotel Krishna.</p><div className="qr-placeholder">UPI QR<br /><small>Scan to pay</small></div></div></div><div className="payment-step"><span>02</span><div className="proof-area"><h3>Send payment proof</h3>{!submitted ? <form onSubmit={(event) => { event.preventDefault(); setSubmitted(true); }}><input type="text" placeholder="Your name" required /><input type="tel" placeholder="Phone number" required /><label className="upload-box"><input type="file" required /> <strong>↑ Upload screenshot</strong><small>JPG or PNG, max 5MB</small></label><button className="primary-button" type="submit">Confirm order <span>→</span></button></form> : <div className="success-message"><b>✓</b><h3>Order received!</h3><p>Thank you. We&apos;ll call you shortly to confirm your order.</p></div>}</div></div></div></div></section>
+      </main>
 
-      <footer className="py-10 text-center text-gray-600 text-xs border-t border-gray-900">
-        <p>© 2026 PANCHAT DHABA - Best Food for Best Students</p>
-      </footer>
+      <footer id="contact" className="site-footer"><div className="footer-brand"><a href="#home" className="brand-mark"><span className="brand-icon">HK</span><span><strong>HOTEL KRISHNA IN</strong><small>Family Restaurant &amp; Banquet</small></span></a><p>Good food. Good times.<br />Great memories.</p></div><div><h4>Visit us</h4><p>12 Krishna Nagar, Main Road<br />Your City, India</p><p>+91 98765 43210<br />hello@hotelkrishna.in</p></div><div><h4>Explore</h4><a href="/menu">Our menu</a><a href="/about">Our story</a><a href="/terms">Terms of use</a><a href="/privacy">Privacy policy</a></div><div><h4>Follow along</h4><p>See what&apos;s cooking</p><div className="social-links"><a href="/contact">ig</a><a href="/contact">fb</a></div></div><div className="footer-bottom">© 2026 Hotel Krishna IN <span>Designed and developed by Aditya</span></div></footer>
+  {cart.length > 0 && <a href="#payment" className="floating-cart"><span>🛒</span><span>{cart.length} item{cart.length > 1 ? "s" : ""}</span><strong>₹{cartTotal} →</strong></a>}
     </div>
   );
 }

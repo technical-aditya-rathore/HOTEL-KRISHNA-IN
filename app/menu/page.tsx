@@ -1,0 +1,17 @@
+"use client";
+
+import { useState } from "react";
+
+const dishes = [
+  ["Royal Paneer Thali", "Paneer curry, dal, rice, rotis, salad and sweet", "249", "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85"],
+  ["Masala Dosa", "Crisp dosa with potato masala, sambar and chutneys", "139", "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=900&q=85"],
+  ["Butter Chicken", "Tandoori chicken in creamy tomato gravy", "329", "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=900&q=85"],
+  ["Dal Makhani", "Slow-cooked black lentils with butter and cream", "189", "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=900&q=85"],
+  ["Tandoori Platter", "Chicken tikka, seekh kebab and mint chutney", "379", "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=900&q=85"],
+  ["Gulab Jamun", "Warm dumplings in saffron sugar syrup", "99", "https://images.unsplash.com/photo-1666190094762-5c5c4e3e8b2c?auto=format&fit=crop&w=900&q=85"],
+];
+
+export default function MenuPage() {
+  const [notice, setNotice] = useState("");
+  return <div className="hotel-site min-h-screen bg-[#fbf8f2] text-[#241c16]"><header className="site-header page-header"><a href="/" className="brand-mark"><span className="brand-icon">HK</span><span><strong>HOTEL KRISHNA IN</strong><small>Family Restaurant &amp; Banquet</small></span></a><nav className="desktop-nav"><a className="current" href="/menu">Menu</a><a href="/about">Our story</a><a href="/contact">Contact</a></nav><a href="/contact" className="header-order">Book a table <span>→</span></a></header><main><section className="inner-hero"><p className="eyebrow">The Hotel Krishna menu</p><h1>Made fresh.<br /><em>Made for sharing.</em></h1><p>Our kitchen brings together Indian comfort food, tandoor favourites and sweet endings for every kind of gathering.</p></section><section className="section-wrap menu-page-grid"><div className="menu-page-intro"><span>01</span><h2>House<br /><em>favourites</em></h2><p>Our most-loved plates, prepared with fresh ingredients and the recipes our guests come back for.</p><a href="/contact" className="text-link">Need a table? <span>→</span></a></div><div className="food-grid">{dishes.map(([name, description, price, image]) => <article className="food-card" key={name}><div className="food-image"><img src={image} onError={(event) => { event.currentTarget.src = "/food-fallback.svg"; }} alt={name} /><button className="quick-add" onClick={() => setNotice(`${name} added to your order`)} aria-label={`Add ${name} to order`}>+</button></div><div className="food-info"><div><h3>{name}</h3><p>{description}</p></div><strong>₹{price}</strong></div></article>)}</div></section></main>{notice && <button className="floating-cart" onClick={() => setNotice("")}>{notice} <strong>×</strong></button>}<footer className="site-footer"><div className="footer-brand"><a href="/" className="brand-mark"><span className="brand-icon">HK</span><span><strong>HOTEL KRISHNA IN</strong><small>Family Restaurant &amp; Banquet</small></span></a><p>Good food. Good times.<br />Great memories.</p></div><div><h4>Explore</h4><a href="/">Home</a><a href="/about">Our story</a><a href="/contact">Contact</a></div><div><h4>Legal</h4><a href="/terms">Terms of use</a><a href="/privacy">Privacy policy</a></div><div className="footer-bottom">© 2026 Hotel Krishna IN <span>Designed and developed by Aditya</span></div></footer></div>;
+}
